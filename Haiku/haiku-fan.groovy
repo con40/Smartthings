@@ -17,6 +17,10 @@ metadata {
         command "lighton"
         command "lightoff"
         command "setlightlevel"
+        command "sleepon"
+        command "sleepoff"
+        command "whooshon"
+        command "whooshoff"
         
       	}
 
@@ -26,22 +30,38 @@ metadata {
 
 	tiles {
     	standardTile("fan", "device.fan", width: 1, height: 1, canChangeIcon: false, canChangeBackground: true) {
-            state "fanon", label: 'On', action:"fanoff", backgroundColor: "#79b821", icon:"st.Lighting.light24"
-            state "fanoff", label: 'Off', action:"fanon", backgroundColor: "#ffffff", icon:"st.Lighting.light24"
+            state "fanon", label: 'Fan On', action:"fanoff", backgroundColor: "#ffc425", icon:"st.Lighting.light24"
+            state "fanoff", label: 'Fan Off', action:"fanon", backgroundColor: "#ffffff", icon:"st.Lighting.light24"
         }
         controlTile("fanlevel", "device.fanlevel", "slider", height: 1, width: 2, inactiveLabel: false, range: "(0..7)") {
 			state "fanlevel", label: '${name}', action:"setfanlevel"
 		}
 		standardTile("light", "device.light", width: 1, height: 1, canChangeIcon: false, canChangeBackground: true) {
-            state "lighton", label: 'On', action:"lightoff", backgroundColor: "#79b821", icon:"st.Lighting.light13"
-            state "lightoff", label: 'Off', action:"lighton", backgroundColor: "#ffffff", icon:"st.Lighting.light13"
+            state "lighton", label: 'Light On', action:"lightoff", backgroundColor: "#ffc425", icon:"st.Lighting.light21"
+            state "lightoff", label: 'Light Off', action:"lighton", backgroundColor: "#ffffff", icon:"st.Lighting.light21"
         }
         controlTile("lightlevel", "device.lightlevel", "slider", height: 1, width: 2, inactiveLabel: false, range: "(0..16)") {
 			state "lightlevel", label: '${name}', action:"setlightlevel"
 		}
-   
-		main "fan"
-        details(["fan","fanlevel","light","lightlevel"])
+       // standardTile("sleep", "device.sleep", width: 1, height: 1, canChangeIcon: false, canChangeBackground: true) {
+        //	state "sleepoff", label: 'Sleep Off', action:"sleepon", backgroundColor: "#ffffff", icon:"st.Weather.weather4"
+     //       state "sleepon", label: 'Sleep On', action:"sleepoff", backgroundColor: "#ffc425", icon:"st.Weather.weather4"
+      //  }
+        standardTile("sleep", "device.sleep", width: 1, height: 1, canChangeIcon: false, canChangeBackground: true) {
+            state "sleepoff", label: 'Sleep On', action:"sleepon", backgroundColor: "#ffc425", icon:"st.Weather.weather4"
+            state "sleepoff", label: 'Sleep On', action:"sleepon", backgroundColor: "#ffc425", icon:"st.Weather.weather4"
+        }
+        standardTile("sleepoff", "device.sleepoff", width: 1, height: 1, canChangeIcon: false, canChangeBackground: true) {
+        	state "sleepoff", label: 'Sleep Off', action:"sleepoff", backgroundColor: "#ffffff", icon:"st.Weather.weather4"
+            state "sleepoff", label: 'Sleep Off', action:"sleepoff", backgroundColor: "#ffffff", icon:"st.Weather.weather4"
+        }
+        standardTile("whoosh", "device.whoosh", width: 1, height: 1, canChangeIcon: false, canChangeBackground: true) {
+        	state "whooshoff", label: 'Whoosh Off', action:"whooshon", backgroundColor: "#ffffff", icon:"st.Weather.weather1"
+            state "whooshon", label: 'Whoosh On', action:"whooshoff", backgroundColor: "#ffc425", icon:"st.Weather.weather1"
+        }
+        
+		main "sleep"
+        details(["fan","fanlevel","light","lightlevel","sleepon","sleepoff","whoosh"])
 	}
 }
 
@@ -79,6 +99,33 @@ def lighton() {
 def lightoff() { 
 	sendEvent(name: "light", value: 'lightoff')
 	request("<" + devname + ";LIGHT;PWR;OFF>")
+}
+
+def sleepon() {
+	sendEvent(name: "sleep", value: 'sleepon')
+	request("<" + devname + ";SLEEP;STATE;ON>")
+}
+
+//def sleepoff() { 
+//	sendEvent(name: "sleep", value: 'sleepoff')
+//	request("<" + devname + ";SLEEP;STATE;OFF>")
+//}
+
+   
+
+def sleepoff() { 
+	sendEvent(name: "sleepoff", value: 'sleepoff')
+	request("<" + devname + ";SLEEP;STATE;OFF>")
+}
+
+def whooshon() {
+	sendEvent(name: "whoosh", value: 'whooshon')
+	request("<" + devname + ";FAN;WHOOSH;ON>")
+}
+
+def whooshoff() { 
+	sendEvent(name: "whoosh", value: 'whooshoff')
+	request("<" + devname + ";FAN;WHOOSH;OFF>")
 }
 
 def setlightlevel(val) {
